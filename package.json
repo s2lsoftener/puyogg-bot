@@ -1,0 +1,29 @@
+{
+  "name": "puyogg-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "tsc": "tsc",
+    "dev": "ts-node-dev --respawn --transpileOnly ./src/index.ts",
+    "prod": "tsc && node built/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@typescript-eslint/eslint-plugin": "^1.10.2",
+    "@typescript-eslint/parser": "^1.10.2",
+    "arpad": "^1.0.2",
+    "discord.js": "^11.5.1",
+    "dotenv": "^8.0.0",
+    "firebase-admin": "^8.1.0",
+    "ts-node-dev": "^1.0.0-pre.40",
+    "typescript": "^3.5.2"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0"
+  }
+}
