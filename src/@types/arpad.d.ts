@@ -4,7 +4,7 @@ declare module 'arpad' {
   import ELO from 'arpad';
 
   class arpad {
-    constructor(k_factor: number | object, min: number, max: any);
+    constructor(k_factor?: number | object, min?: number, max?: any);
     bothExpectedScores(player_1_rating: number, player_2_rating: number): number[];
     expectedScore(rating: number, opponent_rating: number): number;
     getKFactor(rating: number): number;
@@ -14,7 +14,7 @@ declare module 'arpad' {
     newRatingIfLost(rating: number, opponent_rating: number): number;
     newRatingIfTied(rating: number, opponent_rating: number): number;
     newRatingIfWon(rating: number, opponent_rating: number): number;
-    setKFactor(k_factor: number | object): this;
+    setKFactor(k_factor?: number | object): this;
     setMax(maximum: number): this;
     setMin(minimum: number): this;
   }

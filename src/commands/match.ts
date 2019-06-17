@@ -1,7 +1,7 @@
 import Discord from 'discord.js';
 import { LeagueConfig, PlayerData } from '../types';
 import firebase, { configRef } from '../firebase';
-import { cleanIdString } from '../utility';
+import { cleanIdString, newELO } from '../utility';
 import ELO from 'arpad';
 
 export default {
@@ -58,10 +58,10 @@ export default {
       const p1Data = <PlayerData>(await p1Ref.get().then(doc => doc.data()));
       const p2Data = <PlayerData>(await p2Ref.get().then(doc => doc.data()));
 
+      // Create new ELO object with K-factor based on FT10, FT20, Tournament, etc.
       const elo = new ELO();
 
-      console.log(p1Data.current_rating);
-      console.log(p2Data.current_rating);
+      // Calculate new
       const p1_new_elo = elo.newRatingIfWon(p1Data.current_rating, p2Data.current_rating);
       const p2_new_elo = elo.newRatingIfLost(p2Data.current_rating, p1Data.current_rating);
 
