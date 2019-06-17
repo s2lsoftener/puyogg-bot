@@ -24,6 +24,7 @@
     "typescript": "^3.5.2"
   },
   "devDependencies": {
+    "dts-gen": "^0.5.8",
     "eslint": "^5.16.0"
   }
 }

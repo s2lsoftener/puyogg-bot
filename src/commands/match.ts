@@ -2,7 +2,7 @@ import Discord from 'discord.js';
 import { LeagueConfig, PlayerData } from '../types';
 import firebase, { configRef } from '../firebase';
 import { cleanIdString } from '../utility';
-const ELO = require('arpad');
+import ELO from 'arpad';
 
 export default {
   name: 'match',
