@@ -1,5 +1,6 @@
 import Discord from 'discord.js';
 import firebase from '../../firebase';
+import { UserRefs } from '../../types';
 
 export default {
   name: 'organizer_role',

@@ -2,14 +2,12 @@ import Discord from 'discord.js';
 import firebase from '../../firebase';
 import { UserRefs } from '../../types';
 
-
 export default {
-  name: 'add_organizer',
-  usage: '!gg admin add_organizer [@user]',
+  name: 'remove_organizer',
+  usage: '!gg admin remove_organizer [@user]',
   category: 'ADMINISTRATION',
-  description: 'Apply TO role and set as TO in database.',
+  description: 'Remove TO role from user and in database.',
   async execute(message: Discord.Message, args: string[]) {
-    // args[0] - <@user> - an @ ping of the desired user.
     if (args.length === 0) {
       message.reply('Insufficient parameters supplied.');
       return;
@@ -37,24 +35,19 @@ export default {
       return <string>doc.data()!.TO_role.id;
     });
 
-    // Add the requested user to the list of tournament organizers,
-    // if they're not already part of the list.
-    if (organizers.some(organizer => organizer.id === USER_ID)) {
-      message.reply(`${USER} is already a tournament organizer.`);
-      return;
+    // Remove requested user from the list of tournament organizers.
+    const removalIndex = organizers.map(user => user.id).indexOf(USER_ID);
+    if (removalIndex === -1) {
+      message.reply(`${USER} is not a tournament organizer.`);
     } else {
+      organizers.splice(removalIndex, 1);
       configDoc.set({
-        organizers: organizers.push({
-          id: USER_ID,
-          at: USER,
-          name: USER_NAME,
-        }),
+        organizers: organizers,
       }, { merge: true }).then(() => {
-        message.member.addRole(ORGANIZER_ROLE);
-        message.channel.send(`${USER} was successfully added as a tournament organizer.`);
+        message.channel.send(`Successfully removed ${USER} as a tournament organizer.`);
       }).catch(err => {
         console.log(err);
-        message.reply(`There was an error trying to add ${USER} as a tournament organizer.`);
+        message.reply(`There was an error trying to remove ${USER} as a tournament organizer.`);
       });
     }
   },
