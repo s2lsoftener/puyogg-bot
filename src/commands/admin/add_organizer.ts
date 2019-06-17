@@ -1,7 +1,6 @@
 import Discord from 'discord.js';
-import firebase from '../../firebase';
+import { configRef } from '../../firebase';
 import { UserRefs } from '../../types';
-
 
 export default {
   name: 'add_organizer',
@@ -26,14 +25,16 @@ export default {
 
     const USER_NAME = (<Discord.GuildMember>message.guild.members.get(USER_ID)).nickname;
 
-    // Alias league config document.
-    const configDoc = firebase.db.collection('league').doc('config');
-
     // Get current list of organizers and TO role
-    const organizers = await configDoc.get().then(doc => {
-      return <UserRefs[]>doc.data()!.organizers;
+    const organizers = await configRef.get().then(doc => {
+      const organizerArray = <UserRefs[] | undefined>doc.data()!.organizers;
+      if (organizerArray) {
+        return organizerArray;
+      } else {
+        return [];
+      }
     });
-    const ORGANIZER_ROLE = await configDoc.get().then(doc => {
+    const ORGANIZER_ROLE = await configRef.get().then(doc => {
       return <string>doc.data()!.TO_role.id;
     });
 
@@ -43,19 +44,23 @@ export default {
       message.reply(`${USER} is already a tournament organizer.`);
       return;
     } else {
-      configDoc.set({
-        organizers: organizers.push({
+      const newOrganizersArray = [
+        ...organizers,
+        {
           id: USER_ID,
           at: USER,
           name: USER_NAME,
-        }),
-      }, { merge: true }).then(() => {
-        message.member.addRole(ORGANIZER_ROLE);
-        message.channel.send(`${USER} was successfully added as a tournament organizer.`);
-      }).catch(err => {
-        console.log(err);
-        message.reply(`There was an error trying to add ${USER} as a tournament organizer.`);
-      });
+        },
+      ];
+
+      configRef
+        .set({ organizers: newOrganizersArray }, { merge: true }).then(() => {
+          (<Discord.GuildMember>message.guild.members.get(USER_ID)).addRole(ORGANIZER_ROLE);
+          message.channel.send(`${USER} was successfully added as a tournament organizer.`);
+        }).catch(err => {
+          console.log(err);
+          message.reply(`There was an error trying to add ${USER} as a tournament organizer.`);
+        });
     }
   },
 };

@@ -14,8 +14,17 @@ export interface UserRefs {
   name: string
 }
 
+export interface PlayerData {
+  avatar: string;
+  createdTimestamp: number;
+  current_rating: number;
+  id: string;
+  match_history: object;
+  tag: string;
+}
+
 export interface LeagueConfig {
   TO_role: UserRefs;
   organizers: UserRefs[];
-  season: string;
+  current_season: string;
 }

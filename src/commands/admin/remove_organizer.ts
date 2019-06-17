@@ -1,5 +1,5 @@
 import Discord from 'discord.js';
-import firebase from '../../firebase';
+import { configRef } from '../../firebase';
 import { UserRefs } from '../../types';
 
 export default {
@@ -18,20 +18,15 @@ export default {
 
     // Check if user is a valid user in the server.
     if (!message.guild.members.has(USER_ID)) {
-      message.reply('Error: You tried to give an invalid user the organizer role.');
+      message.reply('Error: You tried to remove an invalid user.');
       return;
     }
 
-    const USER_NAME = (<Discord.GuildMember>message.guild.members.get(USER_ID)).nickname;
-
-    // Alias league config document.
-    const configDoc = firebase.db.collection('league').doc('config');
-
-    // Get current list of organizers and TO role
-    const organizers = await configDoc.get().then(doc => {
+    // Get current list of organizers
+    const organizers = await configRef.get().then(doc => {
       return <UserRefs[]>doc.data()!.organizers;
     });
-    const ORGANIZER_ROLE = await configDoc.get().then(doc => {
+    const ORGANIZER_ROLE = await configRef.get().then(doc => {
       return <string>doc.data()!.TO_role.id;
     });
 
@@ -41,7 +36,8 @@ export default {
       message.reply(`${USER} is not a tournament organizer.`);
     } else {
       organizers.splice(removalIndex, 1);
-      configDoc.set({
+      (<Discord.GuildMember>message.guild.members.get(USER_ID)).removeRole(ORGANIZER_ROLE);
+      configRef.set({
         organizers: organizers,
       }, { merge: true }).then(() => {
         message.channel.send(`Successfully removed ${USER} as a tournament organizer.`);

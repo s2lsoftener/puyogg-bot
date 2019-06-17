@@ -1,14 +1,19 @@
 // Firebase-Admin configuration
-import * as admin from 'firebase-admin';
-import dotenv from 'dotenv';
-dotenv.config();
+import * as admin from 'firebase-admin'
+import dotenv from 'dotenv'
+dotenv.config()
 
 admin.initializeApp({
   credential: admin.credential.cert(JSON.parse(<string>process.env.FIREBASE_CONFIG)),
-  storageBucket: 'puyo-gg.appspot.com',
-});
+  storageBucket: 'puyo-gg.appspot.com'
+})
+
+export const configRef = admin
+  .firestore()
+  .collection('league')
+  .doc('config')
 
 export default {
   db: admin.firestore(),
-  bucket: admin.storage().bucket(),
-};
+  bucket: admin.storage().bucket()
+}
